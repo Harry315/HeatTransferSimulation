@@ -7,15 +7,13 @@ import numpy as np
 
 #Use Macro to get the value of the HFL2 node by node! 
 
-def getHFL_gui(odb_path,set_name,direction):
-
-    value_map = {
-        'x': 'HFL1',
-        'y': 'HFL2',
-        'z': 'HFL3'
-    }
-
-    HFL_name = value_map.get(direction)
+def getHFL_gui(odb_path,set_name):
+    HFLname = (
+    'HFL1' if 'X' in set_name else
+    'HFL2' if 'Y' in set_name else
+    'HFL3' if 'Z' in set_name else
+    None
+    )
 
     o1 = session.openOdb(
         name=odb_path)
@@ -23,7 +21,7 @@ def getHFL_gui(odb_path,set_name,direction):
     session.linkedViewportCommands.setValues(_highlightLinkedViewports=False)
     odb = session.odbs[odb_path]
     session.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=(('HFL', 
-        INTEGRATION_POINT, ((COMPONENT, HFL_name), )), ), nodeSets=(set_name, ))
+        INTEGRATION_POINT, ((COMPONENT, HFLname), )), ), nodeSets=(set_name, ))
 
 
     xy1 = session.xyDataObjects
@@ -39,14 +37,7 @@ def getHFL_gui(odb_path,set_name,direction):
     print('point number:',node_num)
     #print(HFL_sum/node_num*2)
     
-def getHFL_nogui(odb_path,set_name,direction):
-    value_map = {
-        'x': 0,
-        'y': 1,
-        'z': 2
-    }
-    HFL_num = value_map.get(direction)
-    
+def getHFL_nogui(odb_path,set_name):
     odb = openOdb(path=odb_path, readOnly=True)
 
     last_step = odb.steps[odb.steps.keys()[-1]]
@@ -64,7 +55,7 @@ def getHFL_nogui(odb_path,set_name,direction):
 
     last_val = {}
     for v in hfl_top.values:
-        last_val[v.nodeLabel] = v.data[HFL_num]  
+        last_val[v.nodeLabel] = v.data[1]  
 
     hfl_array = np.array([last_val[lbl] for lbl in node_labels if lbl in last_val])
     print('average HFL nogui:',hfl_array.mean())
@@ -222,18 +213,18 @@ def HFL_weight_gui(odb_path,set_name):
 odb_path = r'C:/Users/Administrator/Desktop/20251022/abaqus_heat/stationary-25-30-symmetryMesh.odb'
 odb_path = r'C:\Users\Administrator\Desktop\20251022\paraffin_mix\bcc-mix-symmetryMesh\mix-symmetryMesh.odb'
 odb_path = r'C:\Users\Administrator\Desktop\20251022\paraffin_mix\bcc-mix-symmetryMesh\mix-thermo-DC3D4.odb'
-odb_path = r'C:\Users\Administrator\Desktop\20251022\paraffin_mix\bcc-mix-symmetryMesh\mix-thermo.odb'
+odb_path = r'E:\workspace\20251022\calHFL\137777-symmetryMesh.odb'
 #odb_path = r'C:\Users\Administrator\Desktop\20251022\paraffin_mix\bcc-mix-symmetryMesh\mixChangeProperty.odb'
 #odb_path = r'C:\Users\Administrator\Desktop\20251022\paraffin_mix\bcc-mix-symmetryMesh\mixTemp25-50.odb'
 #odb_path = r'C:/Users/Administrator/Desktop/20251022/abaqus_heat/staionary-25-30-array222.odb'
 print(odb_path)
-direction='y'
-set_name='YTOP'
-#set_name='YBOT'
+
+set_name='XTOP'
+# set_name='XBOT'
 print(set_name)
-print('HFL2')
-getHFL_gui(odb_path,set_name,direction)
-getHFL_nogui(odb_path,set_name,direction)
+# print('HFL2')
+getHFL_gui(odb_path,set_name)
+# getHFL_nogui(odb_path,set_name)
 # HFL_weight_nogui(odb_path,set_name)
 # HFL_weight_gui(odb_path,set_name)
 # getHFL_nogui_weight(odb_path)
