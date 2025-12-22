@@ -153,7 +153,6 @@ def HFL_weight_nogui(odb_path,set_name):
     print('weight_sum:', weight_sum)
     odb.close()
 
-
 def HFL_weight_gui(odb_path,set_name):
 
     odb = openOdb(path=odb_path, readOnly=True)       
