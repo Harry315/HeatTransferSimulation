@@ -7,7 +7,7 @@ import numpy as np
 
 #Use Macro to get the value of the HFL2 node by node! 
 
-def getHFL_gui(odb_path,set_name):
+def getHFL_gui_pc(odb_path,set_name):
     HFLname = (
     'HFL1' if 'X' in set_name else
     'HFL2' if 'Y' in set_name else
@@ -20,10 +20,12 @@ def getHFL_gui(odb_path,set_name):
     session.viewports['Viewport: 1'].setValues(displayedObject=o1)
     session.linkedViewportCommands.setValues(_highlightLinkedViewports=False)
     odb = session.odbs[odb_path]
-    xy1 = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=(('HFL', 
+    session.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=(('HFL', 
         INTEGRATION_POINT, ((COMPONENT, HFLname), )), ), nodeSets=(set_name, ))
 
-    node_names=xy1.keys()
+
+    xy1 = session.xyDataObjects
+    node_names=xy1.keys()  
     node_num=len(node_names)
     HFL_sum=0
     for node_name in node_names:
@@ -34,6 +36,30 @@ def getHFL_gui(odb_path,set_name):
     print('average HFL gui',HFL_sum/node_num)
     print('point number:',node_num)
     #print(HFL_sum/node_num*2)
+    
+
+def getHFL_gui(odb_path,set_name):
+    HFLname = (
+    'HFL1' if 'X' in set_name else
+    'HFL2' if 'Y' in set_name else
+    'HFL3' if 'Z' in set_name else
+    None
+    )
+
+    odb = session.odbs[odb_path]
+
+    xy2=xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=(('HFL', 
+        INTEGRATION_POINT, ((COMPONENT, HFLname), )), ), nodeSets=(set_name, ))
+    node_num=len(xy2)
+    HFL_sum=0
+    for i in range(node_num):
+        HFL_node=xy2[i].data[1][1]
+        HFL_sum+=HFL_node
+
+
+    print('average HFL gui',HFL_sum/node_num)
+    print('point number:',node_num)
+
     
 def getHFL_nogui(odb_path,set_name):
     odb = openOdb(path=odb_path, readOnly=True)
