@@ -14,5 +14,5 @@ export I_MPI_PMI_LIBRARY=/opt/gridview/slurm/lib/libpmi2.so
 module load compiler/intel/2021.3.0 mpi/intelmpi/2021.3.0
 ulimit -s unlimited
 
-abq2022 cae noGUI=abaqus python full_pipeline_v1.2.py
+abq2022 cae noGUI=abaqus_python_full_pipeline_v1.2.py
 
