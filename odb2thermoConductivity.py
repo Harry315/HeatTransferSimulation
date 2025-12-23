@@ -1,6 +1,6 @@
 from abaqus import *
 from abaqusConstants import *
-
+import xyPlot
 from odbAccess import openOdb
 import numpy as np
 
@@ -20,11 +20,9 @@ def getHFL_gui(odb_path,set_name):
     session.viewports['Viewport: 1'].setValues(displayedObject=o1)
     session.linkedViewportCommands.setValues(_highlightLinkedViewports=False)
     odb = session.odbs[odb_path]
-    session.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=(('HFL', 
+    xy1 = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=(('HFL', 
         INTEGRATION_POINT, ((COMPONENT, HFLname), )), ), nodeSets=(set_name, ))
 
-
-    xy1 = session.xyDataObjects
     node_names=xy1.keys()
     node_num=len(node_names)
     HFL_sum=0
